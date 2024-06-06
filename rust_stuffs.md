@@ -59,12 +59,46 @@ Or manually modify Cargo.toml, but never Cargo.lock
 
 ## Very basic
 - associated function
-```rust
-let mut guess = String::new();
-```
-The `::` indicates that ::new() is an associated function.  
-___An associated function is a function that's implemented on a type___, in this case, `String`.
+  ```rust
+  let mut guess = String::new();
+  ```
+  The `::` indicates that ::new() is an associated function.  
+  ___An associated function is a function that's implemented on a type___, in this case, `String`.
 
+- __mutability and shadowing__  
+  Variables are immutable by default.  
+  If you want to create a variable whose value will be changed later, you can do it in two ways:
+  - use `mut` keyword
+    ```rust
+    let mut x = 5;
+    x = x + 1;
+    ```
+    When a variable is mutable, you can only change its value but not type.  
+  - use shadowing
+    ```rust
+    let x = 5;
+    let x = x+1;
+    ```
+  Notice that mutable and shadowing are different concepts.
+
+- __scope__
+  You cannot get a variable from an inner scope.
+  ```rust
+  {
+    let _x = 5;
+  }
+  println!("value of _x is {_x}")
+  ```
+  Complier will give error.
+
+- __char != string literal__
+  They are different.  
+  ```rust
+  let c: char = 'Z'; // this is a char
+  let s = "string"; // this is a string literal
+  ```
+  Declare string literal with double quotes.  
+  Declare char with single quote.
 
 
 ## miscellaneous
