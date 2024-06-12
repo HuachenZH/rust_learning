@@ -91,7 +91,7 @@ Or manually modify Cargo.toml, but never Cargo.lock
   ```
   Complier will give error.
 
-- __char != string literal__
+- __data type: char != string literal__  
   They are different.  
   ```rust
   let c: char = 'Z'; // this is a char
@@ -99,6 +99,79 @@ Or manually modify Cargo.toml, but never Cargo.lock
   ```
   Declare string literal with double quotes.  
   Declare char with single quote.
+
+- __data type: tuple__  
+  To create a tuple:  
+  ```rust
+  let tup: (i32, f64, u8) = (500, 6.4, 1);
+  // or 
+  // let tup = (500, 6.4, 1)
+  ```
+  Elements of a tuple can have different types.  
+  You cannot just put a tuple in a println macro.  
+  To get elements in a tuple, you have two ways to do so:  
+  1. destructuring
+    ```rust
+    // destructure a tuple
+    let tup = (500, 6.4, 1);
+    let (x, y, z) = tup;
+    println!("the value of y is {y}");
+    ```
+  2. use period (.)
+    ```rust
+    let tup = (500, 6.4, 1);
+    let five_hundred = tup.0;
+    ```
+    The first index in a tuple is 0.
+
+- __data type: array__  
+  Unlike tuple, elements of an array must have the same type.   
+  ```rust
+  // create an array of [3,3,3,3,3]
+  let arrayy = [3;5];
+  
+  // access an element
+  let first_element = arrayy[0];
+  ```
+  Arrays have a fix length, they cannot grow or shrink.  
+  However they still can be mutable if you specify it:  
+  ```rust
+  let mut arrayy = [3;5]; // [3,3,3,3,3]
+  arrayy[0] = 6;
+  let first_element = arrayy[0];
+  println!(first_element) // output : 6
+  ```
+
+- __expression vs statement__  
+  ```rust
+  let x = 1; 
+  // This is a statement.  
+  // All those who have "let" keyword are statement.
+  // All those who have ";" at the end are statement. (unless with return or break keyword)
+  // Statement does not return a value.
+
+  x + 1
+  x
+  // These are expressions.
+  // Expression returns a value.
+  ```
+
+- __function__  
+  You must specify a function's parameter's type and return type.  
+  Once i had:  
+  ```rust
+  fn main() {
+    let mut num = 1;
+    num = plus_one(num);
+  }
+
+  fn plus_one(num: i32) -> i32 { // you must specify the return type
+    num + 1
+    // or return num+1
+    // or return num+1;
+  }
+  ```
+  
 
 
 ## miscellaneous
@@ -110,3 +183,9 @@ Or manually modify Cargo.toml, but never Cargo.lock
   ```
   The `!` means that it's a macro rather than funciton. If you delete the "!", the compiler will give error
 
+- println!  
+  ```rust
+  let num = 5;
+  println!(num); // this will give error
+  println!("{}", num); // fine
+  ```
