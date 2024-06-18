@@ -189,3 +189,8 @@ Or manually modify Cargo.toml, but never Cargo.lock
   println!(num); // this will give error
   println!("{}", num); // fine
   ```
+
+- unwrap() and expect()  
+  [explanation](https://www.programiz.com/rust/unwrap-and-expect)  
+  - unwrap: if everything's ok, do nothing; if unwrap encounters an error `Err`, panic and stop program execution.
+  - expect: just like unwrap, and you can customize error message.
