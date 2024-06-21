@@ -175,6 +175,7 @@ Or manually modify Cargo.toml, but never Cargo.lock
 
 
 ## Ownership
+### Ownership - ownership
 - stack vs heap  
   See this [stack overflow poste](https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap)  
   | stack  |  heap  |
@@ -242,6 +243,91 @@ fn takes_and_gives_back(some_string:String) -> String {
 }
 ```
 
+### Ownership - references and borrowing
+- what is reference:  
+  Reference is designed to solve the inconvenience coming from ownership:  
+  ```rust
+  fn main() {
+      let s: String = String::from("what's my length");
+      let lenn: usize = calculate_length(s);
+      println!("length is {lenn}");
+      // here, the ownership of s is taken, if you do
+      // println!("s is {s}");
+      // there will be error
+  }
+  
+  fn calculate_length(some_string: String) -> usize {
+      some_string.len()
+  }
+  ```
+  To solve this, we will use reference of `s` in `calculate_length` so that the ownership will not be taken:
+  ```rust
+  fn main() {
+      let s: String = String::from("what's my length");
+      let lenn: usize = calculate_length(&s);  // <-- & means reference
+      println!("length of \"{s}\" is {lenn}");
+  }
+  
+  fn calculate_length(some_string: &String) -> usize { // <-- function signature should indicate reference
+      some_string.len()
+  }
+  
+  ```
+  Making reference is called `borrow`.
+
+- mutable reference  
+  Reference is immutable by default, like variable. You use `mut` to use mutable reference:  
+  ```rust
+  fn main() {
+      let mut s: String = String::from("hello");
+      change_string(&mut s);
+      println!("after change, s is {s}");
+  }
+  
+  fn change_string(some_string: &mut String) {
+      some_string.push_str(", world!"); // you don't return anything here
+      // the .push_str method modify the original String
+  }
+  ```
+  This code show that when you modify a mutable reference, the original data that is referenced will also be modified.
+
+  And of course, if you want to create a mutable reference, the original variable should be mutalbe:  
+  ```rust
+  // This code gives error
+  let s: String = String::from("i'm a immutable string");
+  let r: &mut String = &mut s; // This gives error,
+  // cannot mutate immutable variable `s`
+  ```
+
+- rules of using mutable reference:  
+  1. You cannot borrow mutable reference more than once:  
+  ```rust
+  // This code gives error.
+  let mut s: String = String::from("hello");
+  let r1: &mut String = &mut s;
+  let r2: &mut String = &mut s;
+  println!("r1 is {r1}, r2 is {r2}"); // if you don't put this line, with cargo check, it won't find error
+  ```
+
+  2. You cannot borrow mutable + immutable reference at the same time:  
+  ```rust
+  let mut s: String = String::from("hello");
+  let r1: &mut String = &mut s;
+  let r2: & String = & s;
+  println!("r1 is {r1}, r2 is {r2}");
+  ```
+
+  3. However you can borrow mutable reference after immutable reference scope ends (vice versa):  
+  ```rust
+  // This code compiles.
+  let mut s: String = String::from("hello");
+  let r1: &String = &s;
+  let r2: &String = &s;
+  println!("r1 is {r1}, r2 is {r2}"); // the scope of r1 and r2 ends here
+  let r3: &mut String = &mut s;
+  println!("r3 is {r3}"); // As the scope of immutable reference ended, here you can borrow it mutable
+  ```
+  ___Note that a reference’s scope starts from where it is introduced and continues through the last time that reference is used.___
 
 ## miscellaneous
 - macro  

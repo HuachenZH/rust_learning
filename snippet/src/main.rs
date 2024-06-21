@@ -88,6 +88,23 @@ fn main() {
     let s = String::from("hello");
     let len = cal_len(&s);
     println!("The length of \"{s}\" is {len}");
+    // mutable references
+    let mut s: String = String::from("hello");
+    change_string(&mut s);
+    println!("new s after change is {s}");
+
+    let mut s: String = String::from("hello");
+    let s3: &mut String = &mut s;
+    s3.push_str("pushed");
+    println!("{s3}");
+
+    // immutable reference then mutable reference
+    let mut s: String = String::from("hello");
+    let r1: &String = &s;
+    let r2: &String = &s;
+    println!("r1 is {r1}, r2 is {r2}");
+    let r3: &mut String = &mut s;
+    println!("r3 is {r3}");
 }
 
 
@@ -112,4 +129,8 @@ fn takes_and_gives_back(some_string:String) -> String {
 
 fn cal_len(s: &String) -> usize {
     s.len()
+}
+
+fn change_string(some_string: &mut String) {
+    some_string.push_str(", world!");
 }
