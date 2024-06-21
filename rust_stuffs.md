@@ -174,6 +174,75 @@ Or manually modify Cargo.toml, but never Cargo.lock
   
 
 
+## Ownership
+- stack vs heap  
+  See this [stack overflow poste](https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap)  
+  | stack  |  heap  |
+  | -----  |  ----  |
+  | easy to keep track  |  hard to keep track  |
+  | data stored on stack must have fixed and known size  |  data with an unknown size (or size might change) at compile time can only be stored on heap   |
+  | well organized: LIFO (last in first out)  |  ----  |
+  | _"pushing values onto the stack"_ != _"allocating"_.  Pointers have known size so can be pushed onto stack  |  _"allocating on the heap"_ or just _"allocating"_: when you need space, the memory allocater finds an empty spot in the heap, marks it as being in use, and return a pointer (=address of that location)  |
+  | faster  |  slower (because the allocater has to find a place to store new data)  |
+
+- __ownership rules__:  
+  - ___Each value in Rust has an owner.___
+  - ___There can only be one owner at a time.___
+  - ___When the owner goes out of scope, the value will be dropped.___ (the memory is freed when the variable goes out of scope)
+
+Rust does not have garbage collection. For languages who do not have garbage collection, normally you should do two things: allocate memory when you declare a variable; free the memory when the variable is no longer useful.  
+
+In Rust, you don't need to free memory manually, this can be done by scope:  
+```rust
+{
+  let s = String::from("s is a String");
+  // s is still valid here
+}
+// scope ends, s is no longer valid, the memory is freed.
+```
+More precisely, when there is a closing curly brace, rust automatically calls the `drop` function and cleans up the heap memory.
+
+- ___"move"___:  
+  ```rust
+  let s1 = String::from("hello");
+  let s2 = s1;
+  // s1 was moved to s2
+  // only stack data is copied, heap data is not copied.
+  // the following code will give error:
+  println!("{s1}");
+  // because as the value of s1 was moved to s2, rust consider s1 no longer valid.
+  ```
+- __`copy`__:  
+  This happens with heap but not stack, the code below does not give error:  
+  ```rust
+  let sl1 = "hello"; // sl1 is a string literal, not a String. It stores on stack but not heap
+  let sl2 = sl1;
+  println!("{sl1}"); // it's alright, no error.
+  ```
+  This is the `copy` trait. Scalar types implement copy trait.
+
+Some examples to help understand ownership:  
+```rust
+fn main{
+  let s1 = String::from("hello");
+  takes_ownership(s1);
+  // here s1 is no longer valid.
+
+  let s2 = String::from("hello2");
+  let s3 = takes_and_gives_back(s2);
+  // here s2 is no longer valid, its value was moved to s3
+}
+
+fn takes_ownership(some_string:String) {
+  println!("The ownership of {some_string} is taken");
+}
+
+fn takes_and_gives_back(some_string:String) -> String {
+  some_string
+}
+```
+
+
 ## miscellaneous
 - macro  
   ```rust
@@ -188,9 +257,16 @@ Or manually modify Cargo.toml, but never Cargo.lock
   let num = 5;
   println!(num); // this will give error
   println!("{}", num); // fine
+  println!("{num}"); // fine
   ```
 
 - unwrap() and expect()  
   [explanation](https://www.programiz.com/rust/unwrap-and-expect)  
   - unwrap: if everything's ok, do nothing; if unwrap encounters an error `Err`, panic and stop program execution.
   - expect: just like unwrap, and you can customize error message.
+
+- `string literal` != `String`  
+  | string literal  |  String |
+  | --------------  |  ------ |
+  | immutable  |  can be mutated |
+  | let sl = "this is a string literal";  |  let s = String::from("s is a String"); |

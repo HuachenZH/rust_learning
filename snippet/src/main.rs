@@ -47,7 +47,47 @@ fn main() {
     println!("num before plus_one is {num}");
     num = plus_one(num);
     println!("num after plus_one is {num}");
+    
+    // getting values from parent scope
+    let a = 5;
+    println!("value of a is {a}");
+    {
+        let b = a;
+        println!("value of b is {b}");
+        {
+            let c = b;
+            println!("value of c is {c}");
+        }
+    }
 
+    let num = 5;
+    println!("{num}");
+
+    // :? is the debug trait
+    let sl1 = "string literal 1";
+    let sl2 = sl1;
+    println!("{sl2:?}");
+
+    // s is gone after function call
+    let s = String::from("hello");
+    takes_ownership(s);
+    // s is no longer valide here.
+
+    // s2 is moved
+    let s2 = String::from("hello from s2");
+    let s3 = takes_and_gives_back(s2);
+    println!("s3 is {s3}");
+    // here s2 is no longer valid
+
+    let tup = ("elem0", "elem1");
+    let (x,y) = tup;
+    println!("{x}");
+    println!("{y}");
+
+    // referencing stuffs
+    let s = String::from("hello");
+    let len = cal_len(&s);
+    println!("The length of \"{s}\" is {len}");
 }
 
 
@@ -60,4 +100,16 @@ fn plus_one(num:i32) -> i32 {
 fn another_fct(num: i32) {
     println!("another fct");
     println!("{}",num);
+}
+
+fn takes_ownership(some_string:String) {
+    println!("{some_string}");
+}
+
+fn takes_and_gives_back(some_string:String) -> String {
+    some_string
+}
+
+fn cal_len(s: &String) -> usize {
+    s.len()
 }
